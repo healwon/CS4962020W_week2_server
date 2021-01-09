@@ -25,12 +25,13 @@ function getServerIp() {
 // Filters the file and only leaves images
 const fileFilter = (req, file, cb) => {
     // reject a file
-    if (file.mimetype === 'image/jpeg' || file.mimetype === 'image/png') {
+    //if (file.mimetype === 'image/jpeg' || file.mimetype === 'image/png') {
+    if (file.mimetype == 'image/*' ) {
         cb(null, true);
     } else {
         cb(null, false);
     }
-  }; 
+}; 
 
 const storage = multer.diskStorage({
     destination: function(req, file, cb) {
@@ -155,7 +156,5 @@ router.delete("/item/:imageId", (req, res, next) => {
         res.status(500).json({error: err});
     });
 });
-
-
 
 module.exports = router;
