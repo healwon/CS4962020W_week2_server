@@ -19,10 +19,8 @@ function getServerIp() {
             }
         });
     }
-  
     return result;
 }
-
 
 // Filters the file and only leaves images
 const fileFilter = (req, file, cb) => {
@@ -64,51 +62,47 @@ router.get("/", (req, res, next) => {
             message: "Success",
             count: docs.length,
             results: docs.map(doc => {
-            return {
-                _id: doc._id,
-                name: doc.name,
-                userImage: 'http://' + SERVER_IP + ':8080/' + doc.userImage,
-                fb_id: doc.fb_id
-            };
+                return {
+                    _id: doc._id,
+                    name: doc.name,
+                    userImage: 'http://' + SERVER_IP + ':8080/' + doc.userImage,
+                    fb_id: doc.fb_id
+                };
             })
         };
-      res.status(200).json(response);
+        res.status(200).json(response);
     })
     .catch(err => {
         console.log(err);
-        res.status(500).json({
-            error: err
-        });
+        res.status(500).json({error: err});
     });
 });
 
 // get all the images under certain fb_id
 router.get("/fb_id/:fb_id", (req, res, next) => {
-  Image.find({fb_id: req.params.fb_id})
-  .select("_id name userImage fb_id")
-  .exec()
-  .then(docs => {
-    const response = {
-        resultCode: 1,
-        message: "Success",
-        count: docs.length,
-        results: docs.map(doc => {
-        return {
-            _id: doc._id,
-            name: doc.name,
-            userImage: 'http://' + SERVER_IP + ':8080/' + doc.userImage,
-            fb_id: doc.fb_id
+    Image.find({fb_id: req.params.fb_id})
+    .select("_id name userImage fb_id")
+    .exec()
+    .then(docs => {
+        const response = {
+            resultCode: 1,
+            message: "Success",
+            count: docs.length,
+            results: docs.map(doc => {
+                return {
+                    _id: doc._id,
+                    name: doc.name,
+                    userImage: 'http://' + SERVER_IP + ':8080/' + doc.userImage,
+                    fb_id: doc.fb_id
+                };
+            })
         };
-      })
-    };
-    res.status(200).json(response);
-  })
-  .catch(err => {
-    console.log(err);
-    res.status(500).json({
-      error: err
+        res.status(200).json(response);
+    })
+    .catch(err => {
+        console.log(err);
+        res.status(500).json({error: err});
     });
-  });
 });
   
 //gets the image by adding /imageID/:imageID at the end.
@@ -116,36 +110,33 @@ router.get('/item/:imageID', function(req, res, next){
     Image.findOne({_id: req.params.imageID}, function(err, image){
         if(err) return res.status(500).json({error: err});
         if(!image) return res.status(404).json({error: 'image not found'});
-        res.json(image);
+        res.status(200).json(image);
     })
 });
 
 //array로 고치기
 router.post("/", upload.single('userImage'), (req, res, next) => {
-  const image = new Image({
-    _id: new mongoose.Types.ObjectId(),
-    fb_id: req.body.fb_id,
-    name: req.body.name,
-    userImage: req.file.path
-  });
-  image
-    .save()
+    const image = new Image({
+        fb_id: req.body.fb_id,
+        name: req.body.name,
+        userImage: req.file.path
+    });
+    image.save()
     .then(result => {
-      console.log(result);
-      res.status(201).json({
-        message: "Created image successfully",
-        createdImage: {
-            name: result.name,
-            _id: result._id,
-            fb_id: result.fb_id,
-        }
-      });
+        console.log(result);
+        res.status(201).json({
+            resultCode: 1,
+            message: "Created image successfully",
+            createdImage: {
+                name: result.name,
+                _id: result._id,
+                fb_id: result.fb_id,
+            }
+        });
     })
     .catch(err => {
-      console.log(err);
-      res.status(500).json({
-        error: err
-      });
+        console.log(err);
+        res.status(500).json({error: err});
     });
 });
 
@@ -154,15 +145,14 @@ router.delete("/item/:imageId", (req, res, next) => {
     Image.remove({ _id: id })
     .exec()
     .then(result => {
-      res.status(200).json({
-          message: 'Image deleted',
-      });
+        res.status(200).json({
+            resultCode: 1,
+            message: 'Image deleted'
+        });
     })
     .catch(err => {
-      console.log(err);
-      res.status(500).json({
-        error: err
-      });
+        console.log(err);
+        res.status(500).json({error: err});
     });
 });
 

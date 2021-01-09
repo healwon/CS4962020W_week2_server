@@ -10,7 +10,7 @@ router.get('/', function(req,res, next){
     .select("_id name fb_id")
     .exec(function(err, contacts){
         if(err) return res.status(500).json({error: err});
-        res.json({
+        res.status(200).json({
             resultCode: 1,
             message: "Success",
             count: contacts.length,
@@ -23,7 +23,7 @@ router.get('/item/:contact_id', function(req, res, next){
     Contact.findOne({_id: req.params.contact_id}, function(err, contact){
         if(err) return res.status(500).json({error: err});
         if(!contact) return res.status(404).json({error: 'contact not found'});
-        res.json(contact);
+        res.status(200).json(contact);
     })
 });
 
@@ -33,7 +33,7 @@ router.get('/fb_id/:fb_id', function(req, res, next){
     .select("_id name fb_id")
     .exec(function(err, contacts){
         if(err) return res.status(500).json({error: err});
-        res.json({
+        res.status(200).json({
             resultCode: 1,
             message: "Success",
             count: contacts.length,
@@ -41,7 +41,7 @@ router.get('/fb_id/:fb_id', function(req, res, next){
     })
 });
 
-// CREATE BOOK
+// create single contact
 router.post('/', function(req, res, next){
     var contact = new Contact();
     contact.name = req.body.name;
@@ -50,12 +50,13 @@ router.post('/', function(req, res, next){
     contact.save(function(err){
         if(err){
             console.error(err);
-            res.json({result: 0});
+            res.status(500).json({error: err});
             return;
         }
-
-        res.json({result: 1});
-
+        res.status(200).json({
+            resultCode: 1,
+            message: "Successfully created"
+        });
     });
 });
 
@@ -63,13 +64,10 @@ router.post('/', function(req, res, next){
 router.delete('/item/:contact_id', function(req, res, next){
     contact.remove({ _id: req.params.contact_id }, function(err, output){
         if(err) return res.status(500).json({ error: err });
-
-        /* ( SINCE DELETE OPERATION IS IDEMPOTENT, NO NEED TO SPECIFY )
-        if(!output.result.n) return res.status(404).json({ error: "book not found" });
-        res.json({ message: "book deleted" });
-        */
-
-        res.status(204).end();
+        res.status(204).json({
+            resultCode: 1,
+            message: "contact deleted"
+        });
     })
 });
 
