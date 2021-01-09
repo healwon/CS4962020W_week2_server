@@ -20,7 +20,6 @@ mongoose.connect('mongodb://localhost/books');
 app.use(morgan("dev"));
 app.use('/uploads', express.static('uploads'));
 
-
 // DEFINE MODEL
 var Book = require('./models/book');
 
@@ -35,7 +34,9 @@ var port = process.env.PORT || 8080;
 var indexRouter = require('./routes/index')(app)
 var booksRouter = require('./routes/books')(app, Book)
 const imagesRouter = require("./routes/images");
+var contactRouter = require('./routes/contacts');
 
+app.use('/contacts', contactRouter)
 app.use('/books', booksRouter);
 app.use('/images', imagesRouter);
 app.use('/', indexRouter);
