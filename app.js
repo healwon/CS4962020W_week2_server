@@ -1,6 +1,7 @@
 // [LOAD PACKAGES]
 var express     = require('express');
 var app         = express();
+const morgan = require("morgan");
 var bodyParser  = require('body-parser');
 var mongoose    = require('mongoose');
 
@@ -16,9 +17,12 @@ db.once('open', function(){
 
 mongoose.connect('mongodb://localhost/books');
 
+app.use(morgan("dev"));
+app.use('/uploads', express.static('uploads'));
+
+
 // DEFINE MODEL
 var Book = require('./models/book');
-var Img = require('./models/image');
 
 // [CONFIGURE APP TO USE bodyParser]
 app.use(bodyParser.urlencoded({ extended: true }));
@@ -30,11 +34,11 @@ var port = process.env.PORT || 8080;
 // [CONFIGURE ROUTER]
 var indexRouter = require('./routes/index')(app)
 var booksRouter = require('./routes/books')(app, Book)
-var imagesRouter = require('./routes/images')(app, Img)
+const imagesRouter = require("./routes/images");
 
 app.use('/books', booksRouter);
-app.use('/', indexRouter);
 app.use('/images', imagesRouter);
+app.use('/', indexRouter);
 
 // [RUN SERVER]
 var server = app.listen(port, function(){
