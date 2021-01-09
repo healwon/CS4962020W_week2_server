@@ -76,7 +76,7 @@ const fileFilter = (req, file, cb) => {
   });
 
 
-  router.post("/", upload.single('Image'), (req, res, next) => {
+  router.post("/", upload.single('userImage'), (req, res, next) => {
     const image = new Image({
       _id: new mongoose.Types.ObjectId(),
       fb_id: req.body.fb_id,
