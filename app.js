@@ -23,6 +23,7 @@ app.use('/uploads', express.static('uploads'));
 
 // DEFINE MODEL
 var Book = require('./models/book');
+var Match = require('./models/match')
 
 // [CONFIGURE APP TO USE bodyParser]
 app.use(bodyParser.urlencoded({ extended: true }));
@@ -34,10 +35,12 @@ var port = process.env.PORT || 8080;
 // [CONFIGURE ROUTER]
 var indexRouter = require('./routes/index')(app)
 var booksRouter = require('./routes/books')(app, Book)
-const imagesRouter = require("./routes/images");
+const imagesRouter = require("./routes/images")
+var matchesRouter = require("./routes/matches")(app, Match)
 
 app.use('/books', booksRouter);
 app.use('/images', imagesRouter);
+app.use('/matches', matchesRouter);
 app.use('/', indexRouter);
 
 // [RUN SERVER]
