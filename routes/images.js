@@ -133,7 +133,7 @@ const fileFilter = (req, file, cb) => {
   });
 
 //gets the image by adding /imageID/:imageID at the end.
-  router.get('/imageID/:imageID', function(req, res, next){
+  router.get('/image_id/:imageID', function(req, res, next){
     Image.findOne({_id: req.params.imageID}, function(err, image){
         if(err) return res.status(500).json({error: err});
         if(!image) return res.status(404).json({error: 'image not found'});
@@ -142,7 +142,7 @@ const fileFilter = (req, file, cb) => {
 });
 
 
-router.delete("/imageID/:imageId", (req, res, next) => {
+router.delete("/image_id/:imageId", (req, res, next) => {
   const id = req.params.imageId;
   Image.remove({ _id: id })
     .exec()
@@ -158,8 +158,6 @@ router.delete("/imageID/:imageId", (req, res, next) => {
       });
     });
 });
-
-
 
 
 
