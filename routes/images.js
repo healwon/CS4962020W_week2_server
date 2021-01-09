@@ -65,10 +65,10 @@ router.get("/", (req, res, next) => {
             count: docs.length,
             results: docs.map(doc => {
             return {
-                name: doc.name,
-                fb_id: doc.fb_id,
-                userImage: 'http://' + SERVER_IP + ':8080/' + doc.userImage,
                 _id: doc._id,
+                name: doc.name,
+                userImage: 'http://' + SERVER_IP + ':8080/' + doc.userImage,
+                fb_id: doc.fb_id
             };
             })
         };
@@ -94,10 +94,10 @@ router.get("/fb_id/:fb_id", (req, res, next) => {
         count: docs.length,
         results: docs.map(doc => {
         return {
-          name: doc.name,
-          fb_id: doc.fb_id,
-          userImage: 'http://' + SERVER_IP + ':8080/' + doc.userImage,
-          _id: doc._id,
+            _id: doc._id,
+            name: doc.name,
+            userImage: 'http://' + SERVER_IP + ':8080/' + doc.userImage,
+            fb_id: doc.fb_id
         };
       })
     };
