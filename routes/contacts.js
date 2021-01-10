@@ -46,6 +46,8 @@ router.post('/', function(req, res, next){
     var contact = new Contact();
     contact.name = req.body.name;
     contact.fb_id = req.body.fb_id;
+    contact.numbers = req.body.numbers;
+    contact.emails = req.body.emails;
 
     contact.save(function(err){
         if(err){
@@ -55,9 +57,20 @@ router.post('/', function(req, res, next){
         }
         res.status(200).json({
             resultCode: 1,
-            message: "Successfully created"
+            message: "Successfully created",
+            _id: contact._id
         });
     });
+});
+
+// edit single contact
+router.put('/:item_id', function(req, res, next){
+    res.status(404).json({error: "not implemented"});
+});
+
+// DELETE BOOK
+router.delete('/', function(req, res, next){
+    res.status(404).json({error: "not implemented"});
 });
 
 // DELETE BOOK
