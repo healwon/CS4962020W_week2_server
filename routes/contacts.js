@@ -8,6 +8,7 @@ const Contact = require('../models/contact')
 router.get('/', function(req,res, next){
     Contact.find()
     .select("_id name fb_id")
+    .sort({"name": 1})
     .exec(function(err, contacts){
         if(err) return res.status(500).json({error: err});
         res.status(200).json({
@@ -31,6 +32,7 @@ router.get('/item/:contact_id', function(req, res, next){
 router.get('/fb_id/:fb_id', function(req, res, next){
     Contact.find({fb_id: req.params.fb_id})
     .select("_id name fb_id")
+    .sort({"name": 1})
     .exec(function(err, contacts){
         if(err) return res.status(500).json({error: err});
         res.status(200).json({
@@ -68,19 +70,25 @@ router.put('/:item_id', function(req, res, next){
     res.status(404).json({error: "not implemented"});
 });
 
-// DELETE BOOK
+// delete multiple contacts by id
 router.delete('/', function(req, res, next){
-    res.status(404).json({error: "not implemented"});
+    Contact.deleteMany({ _id: req.body.contacts_id }, function(err, output){
+        if(err) {
+            res.status(500).json({ error: err });
+            return
+        }
+        res.status(204).end()
+    })
 });
 
-// DELETE BOOK
+// delete single contact by id
 router.delete('/item/:contact_id', function(req, res, next){
-    contact.remove({ _id: req.params.contact_id }, function(err, output){
-        if(err) return res.status(500).json({ error: err });
-        res.status(204).json({
-            resultCode: 1,
-            message: "contact deleted"
-        });
+    Contact.deleteOne({ _id: req.params.contact_id }, function(err, output){
+        if(err) {
+            res.status(500).json({ error: err });
+            return
+        }
+        res.status(204).end()
     })
 });
 
