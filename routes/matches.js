@@ -16,14 +16,34 @@ module.exports = function(app, Match){
     });
 
 
-
-    router.get('/fb_id/:fb_id', function(req, res, next){
-        Match.findOne({fb_id: req.params.fb_id}, function(err, match){
-            if(err) return res.status(500).json({error: err});
-            if(!match) return res.status(404).json({error: 'fb_id not found'});
-            res.json(match);
+    router.get("/fb_id/:fb_id", (req, res, next) => {
+        Match.find({fb_id: req.params.fb_id})
+        .select("_id own_phone own_kakao other_phone other_kakao fb_id")
+        .exec()
+        .then(docs => {
+            const response = {
+                resultCode: 1,
+                message: "Success",
+                count: docs.length,
+                results: docs.map(doc => {
+                    return {
+                        _id: doc._id,
+                        own_phone: doc.own_phone,
+                        own_kakao: doc.own_kakao,
+                        fb_id: doc.fb_id,
+                        other_phone: doc.other_phone,
+                        other_kakao: doc.other_kakao
+                    };
+                })
+            };
+            res.status(200).json(response);
         })
+        .catch(err => {
+            console.log(err);
+            res.status(500).json({error: err});
+        });
     });
+
 
     router.get('/own_phone/:own_phone', function(req, res, next){
         Match.findOne({own_phone: req.params.own_phone}, function(err, match){
@@ -40,6 +60,7 @@ module.exports = function(app, Match){
             res.json(match);
         })
     });
+    
 
     // POST one's information
     router.post('/', function(req, res, next){

@@ -3,7 +3,7 @@ const router = express.Router();
 const mongoose = require("mongoose");
 const multer = require('multer');
 
-SERVER_IP = '192.249.18.54'
+SERVER_IP = '192.249.18.162'
 
 var os = require('os');
   
