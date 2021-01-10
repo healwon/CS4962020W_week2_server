@@ -6,7 +6,8 @@ var matchSchema = new Schema({
     own_phone: { type: String, required: true },
     own_kakao: String,
     other_phone: String,
-    other_kakao: String
+    other_kakao: String,
+    matched: Boolean
 });
 
 module.exports = mongoose.model('match', matchSchema);

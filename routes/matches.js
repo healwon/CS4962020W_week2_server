@@ -49,6 +49,7 @@ module.exports = function(app, Match){
         match.own_kakao = req.body.own_kakao;
         match.other_phone = req.body.other_phone;
         match.other_kakao = req.body.other_kakao;
+        match.matched = req.body.matched;
         match.save(function(err){
             if(err){
                 console.error(err);
@@ -72,6 +73,7 @@ module.exports = function(app, Match){
             if(req.body.own_kakao) match.own_kakao = req.body.own_kakao;
             if(req.body.other_phone) match.other_phone = req.body.other_phone;
             if(req.body.other_kakao) match.other_kakao = req.body.other_kakao;
+            if(req.body.matched) match.matched = req.body.matched;
 
             match.save(function(err){
                 if(err) res.status(500).json({error: 'failed to update'});
