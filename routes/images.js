@@ -2,6 +2,8 @@ const express = require("express");
 const router = express.Router();
 const mongoose = require("mongoose");
 const multer = require('multer');
+const fs = require('fs')
+const path = require('path')
 
 SERVER_IP = '192.249.18.162'
 
@@ -139,6 +141,16 @@ router.post("/", upload.single('userImage'), (req, res, next) => {
         console.log(err);
         res.status(500).json({error: err});
     });
+});
+
+router.delete('/', function(req, res, next){
+    Image.deleteMany({ _id: req.body.images_id }, function(err, output){
+        if(err) {
+            res.status(500).json({ error: err });
+            return
+        }
+        res.status(204).end()
+    })
 });
 
 router.delete("/item/:imageId", (req, res, next) => {
