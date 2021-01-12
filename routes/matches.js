@@ -31,6 +31,46 @@ module.exports = function(app, Match){
                         own_phone: doc.own_phone,
                         own_kakao: doc.own_kakao,
                         fb_id: doc.fb_id,
+                        fb_name: doc.fb_name,
+                        other_phone: doc.other_phone,
+                        other_kakao: doc.other_kakao
+                    };
+                })
+            };
+            res.status(200).json(response);
+        })
+        .catch(err => {
+            console.log(err);
+            res.status(500).json({error: err});
+        });
+    });
+
+/*
+    router.get('/own_phone/:own_phone', function(req, res, next){
+        Match.findOne({own_phone: req.params.own_phone}, function(err, match){
+            if(err) return res.status(500).json({error: err});
+            if(!match) return res.status(200).json({error: 'phone number not found'});
+            res.json(match);
+        })
+    });
+*/
+    
+    router.get('/own_phone/:own_phone', (req, res, next) => {
+        Match.find({own_phone: req.params.own_phone})
+        .select("_id own_phone own_kakao other_phone other_kakao fb_id fb_name")
+        .exec()
+        .then(docs => {
+            const response = {
+                resultCode: 1,
+                message: "Success",
+                count: docs.length,
+                results: docs.map(doc => {
+                    return {
+                        _id: doc._id,
+                        own_phone: doc.own_phone,
+                        own_kakao: doc.own_kakao,
+                        fb_id: doc.fb_id,
+                        fb_name: doc.fb_name,
                         other_phone: doc.other_phone,
                         other_kakao: doc.other_kakao
                     };
@@ -45,14 +85,6 @@ module.exports = function(app, Match){
     });
 
 
-    router.get('/own_phone/:own_phone', function(req, res, next){
-        Match.findOne({own_phone: req.params.own_phone}, function(err, match){
-            if(err) return res.status(500).json({error: err});
-            if(!match) return res.status(404).json({error: 'phone number not found'});
-            res.json(match);
-        })
-    });
-
     router.get('/own_kakao/:own_kakao', function(req, res, next){
         Match.findOne({own_kakao: req.params.own_kakao}, function(err, match){
             if(err) return res.status(500).json({error: err});
@@ -65,7 +97,8 @@ module.exports = function(app, Match){
     // POST one's information
     router.post('/', function(req, res, next){
         var match = new Match();
-        match.fb_id = req.body.fb_id
+        match.fb_id = req.body.fb_id;
+        match.fb_name = req.body.fb_name;
         match.own_phone = req.body.own_phone;
         match.own_kakao = req.body.own_kakao;
         match.other_phone = req.body.other_phone;
@@ -97,8 +130,15 @@ module.exports = function(app, Match){
             if(req.body.matched) match.matched = req.body.matched;
 
             match.save(function(err){
-                if(err) res.status(500).json({error: 'failed to update'});
-                res.json({message: 'match updated'});
+                if(err) {
+                    console.log(err)
+                    return res.status(500).json({error: 'failed to update'});
+                }
+                res.status(200).json({
+                    resultCode: 1,
+                    message: "edit success",
+                    _id: match._id
+                })
             });
 
         });
@@ -107,6 +147,20 @@ module.exports = function(app, Match){
 
     router.delete('/fb_id/:fb_id', function(req, res, next){
         Match.remove({fb_id: req.params.fb_id }, function(err, output){
+            if(err) return res.status(500).json({ error: "database failure" });
+
+            /* ( SINCE DELETE OPERATION IS IDEMPOTENT, NO NEED TO SPECIFY )
+            if(!output.result.n) return res.status(404).json({ error: "book not found" });
+            res.json({ message: "book deleted" });
+            */
+
+            res.status(204).end();
+        })
+    });
+
+    
+    router.delete('/item/:_id', function(req, res, next){
+        Match.remove({_id: req.params._id }, function(err, output){
             if(err) return res.status(500).json({ error: "database failure" });
 
             /* ( SINCE DELETE OPERATION IS IDEMPOTENT, NO NEED TO SPECIFY )
