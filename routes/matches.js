@@ -99,8 +99,15 @@ module.exports = function(app, Match){
             if(req.body.matched) match.matched = req.body.matched;
 
             match.save(function(err){
-                if(err) res.status(500).json({error: 'failed to update'});
-                res.json({message: 'match updated'});
+                if(err) {
+                    console.log(err)
+                    return res.status(500).json({error: 'failed to update'});
+                }
+                res.status(200).json({
+                    resultCode: 1,
+                    message: "edit success",
+                    _id: match._id
+                })
             });
 
         });
