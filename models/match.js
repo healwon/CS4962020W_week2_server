@@ -3,6 +3,7 @@ var Schema = mongoose.Schema;
 
 var matchSchema = new Schema({
     fb_id: { type: String, required: true },
+    fb_name: { type: String, required: true },
     own_phone: { type: String, required: true },
     own_kakao: String,
     other_phone: String,

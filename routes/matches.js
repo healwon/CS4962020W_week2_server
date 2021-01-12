@@ -31,6 +31,7 @@ module.exports = function(app, Match){
                         own_phone: doc.own_phone,
                         own_kakao: doc.own_kakao,
                         fb_id: doc.fb_id,
+                        fb_name: doc.fb_name,
                         other_phone: doc.other_phone,
                         other_kakao: doc.other_kakao
                     };
@@ -65,7 +66,8 @@ module.exports = function(app, Match){
     // POST one's information
     router.post('/', function(req, res, next){
         var match = new Match();
-        match.fb_id = req.body.fb_id
+        match.fb_id = req.body.fb_id;
+        match.fb_name = req.body.fb_name;
         match.own_phone = req.body.own_phone;
         match.own_kakao = req.body.own_kakao;
         match.other_phone = req.body.other_phone;
@@ -107,6 +109,20 @@ module.exports = function(app, Match){
 
     router.delete('/fb_id/:fb_id', function(req, res, next){
         Match.remove({fb_id: req.params.fb_id }, function(err, output){
+            if(err) return res.status(500).json({ error: "database failure" });
+
+            /* ( SINCE DELETE OPERATION IS IDEMPOTENT, NO NEED TO SPECIFY )
+            if(!output.result.n) return res.status(404).json({ error: "book not found" });
+            res.json({ message: "book deleted" });
+            */
+
+            res.status(204).end();
+        })
+    });
+
+    
+    router.delete('/item/:_id', function(req, res, next){
+        Match.remove({_id: req.params._id }, function(err, output){
             if(err) return res.status(500).json({ error: "database failure" });
 
             /* ( SINCE DELETE OPERATION IS IDEMPOTENT, NO NEED TO SPECIFY )
